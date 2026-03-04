@@ -1344,65 +1344,97 @@ function parseBookmarkHTML(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
 
-  // Recursively parse DL structure
-  function parseDL(dl, depth) {
-    const results = [];
-    if (!dl) return results;
-    const children = Array.from(dl.children);
-    let i = 0;
-    while (i < children.length) {
-      const dt = children[i];
-      if (dt.tagName !== 'DT') { i++; continue; }
-      const h3 = dt.querySelector(':scope > h3');
-      const a = dt.querySelector(':scope > a');
-      if (h3) {
-        // It's a folder
-        const name = h3.textContent.trim();
-        // Skip browser default folders
-        const skip = ['bookmarks toolbar','bookmarks menu','other bookmarks',
-                      'mobile bookmarks','reading list','favorites bar','toolbar'];
-        if (skip.includes(name.toLowerCase())) { i++; continue; }
-        // Find following DL sibling
-        const nextDL = dt.querySelector('dl') || (children[i+1] && children[i+1].tagName === 'DL' ? children[i+1] : null);
-        if (depth === 0) {
-          // Top-level folder → becomes a category, flatten sub-folders into it
-          const links = collectLinks(nextDL || dt);
-          if (links.length) results.push({ name, links });
-        } else {
-          // Nested folder → flatten links up with prefixed names
-          const links = collectLinks(nextDL || dt, name);
-          results.push(...links.map(l => ({ _flat: true, ...l })));
-        }
-      } else if (a) {
-        results.push({ _flat: true, name: a.textContent.trim(), url: a.href });
-      }
-      i++;
-    }
-    return results;
-  }
+  const skipNames = new Set([
+    'bookmarks toolbar','bookmarks menu','other bookmarks',
+    'mobile bookmarks','reading list','favorites bar','toolbar'
+  ]);
 
   function collectLinks(container, prefix) {
     if (!container) return [];
     const links = [];
     container.querySelectorAll('a').forEach(a => {
-      const url = a.href;
+      const url = a.getAttribute('href') || '';
       if (!url || url.startsWith('place:') || url.startsWith('javascript:')) return;
       const name = prefix ? `${prefix} - ${a.textContent.trim()}` : a.textContent.trim();
-      links.push({ name, url });
+      if (name && url) links.push({ name, url });
     });
     return links;
   }
 
-  // Find root DL
-  const rootDL = doc.querySelector('dl');
-  _importParsed = parseDL(rootDL, 0);
+  // Safari exports as flat siblings: <DT><H3>FolderName</H3> followed by <DL>...</DL>
+  // We walk all DT children of the root body and pair each H3 with its following DL
+  const categories = [];
+  const bodyDTs = Array.from(doc.querySelectorAll('body > dl > dt, body > dt'));
 
-  // Any flat items at root level → put into "Favorites"
-  const flatItems = _importParsed.filter(x => x._flat);
-  const catItems = _importParsed.filter(x => !x._flat);
-  if (flatItems.length) catItems.unshift({ name: 'Favorites', links: flatItems });
-  _importParsed = catItems;
+  // Fallback: get all H3s in the document if direct query yields nothing
+  const allH3s = bodyDTs.length > 0
+    ? bodyDTs.filter(dt => dt.querySelector('h3'))
+    : Array.from(doc.querySelectorAll('h3')).map(h3 => h3.parentElement);
 
+  allH3s.forEach(dt => {
+    const h3 = dt.querySelector('h3') || (dt.tagName === 'H3' ? dt : null);
+    if (!h3) return;
+    const name = h3.textContent.trim();
+    if (skipNames.has(name.toLowerCase())) return;
+
+    // The DL for this folder is either a child of the DT or the next sibling element
+    let dl = dt.querySelector('dl');
+    if (!dl) {
+      let next = dt.nextElementSibling;
+      while (next && next.tagName !== 'DL') next = next.nextElementSibling;
+      dl = next;
+    }
+    if (!dl) return;
+
+    // Check for sub-folders — flatten them with prefixed names
+    const links = [];
+    const subH3s = dl.querySelectorAll(':scope > dt > h3');
+
+    if (subH3s.length > 0) {
+      // Has sub-folders — flatten each into prefixed links
+      subH3s.forEach(subH3 => {
+        const subName = subH3.textContent.trim();
+        const subDT = subH3.parentElement;
+        let subDL = subDT.querySelector('dl');
+        if (!subDL) {
+          let next = subDT.nextElementSibling;
+          while (next && next.tagName !== 'DL') next = next.nextElementSibling;
+          subDL = next;
+        }
+        if (subDL) links.push(...collectLinks(subDL, subName));
+      });
+      // Also collect any direct links in the parent folder (not in sub-folders)
+      Array.from(dl.querySelectorAll(':scope > dt > a')).forEach(a => {
+        const url = a.getAttribute('href') || '';
+        if (!url || url.startsWith('place:') || url.startsWith('javascript:')) return;
+        links.push({ name: a.textContent.trim(), url });
+      });
+    } else {
+      links.push(...collectLinks(dl));
+    }
+
+    if (links.length) categories.push({ name, links });
+  });
+
+  // If the above found nothing, fall back to grabbing every H3+DL pair anywhere
+  if (categories.length === 0) {
+    doc.querySelectorAll('h3').forEach(h3 => {
+      const name = h3.textContent.trim();
+      if (skipNames.has(name.toLowerCase())) return;
+      const dt = h3.parentElement;
+      let dl = dt ? dt.querySelector('dl') : null;
+      if (!dl && dt) {
+        let next = dt.nextElementSibling;
+        while (next && next.tagName !== 'DL') next = next.nextElementSibling;
+        dl = next;
+      }
+      if (!dl) return;
+      const links = collectLinks(dl);
+      if (links.length) categories.push({ name, links });
+    });
+  }
+
+  _importParsed = categories;
   renderImportPreview();
 }
 
