@@ -26,6 +26,11 @@
           "id": "l3",
           "name": "Hacker News",
           "url": "https://news.ycombinator.com"
+        },
+        {
+          "id": "x8kj59yi",
+          "name": "Perplexity",
+          "url": "https://www.perplexity.ai/"
         }
       ]
     },
@@ -88,11 +93,6 @@
           "id": "xpsd5zj0",
           "name": "Peloton",
           "url": "https://members.onepeloton.com/classes"
-        },
-        {
-          "id": "x8kj59yi",
-          "name": "Perplexity",
-          "url": "https://www.perplexity.ai/"
         },
         {
           "id": "xon03h2k",
