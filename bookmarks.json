@@ -136,6 +136,11 @@
           "id": "xon03h2k",
           "name": "ChatGPT",
           "url": "https://chatgpt.com/"
+        },
+        {
+          "id": "x7lywk92",
+          "name": "DALL·E 2",
+          "url": "https://openai.com/product/dall-e-2"
         }
       ]
     },
@@ -547,11 +552,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "x7lywk92",
-          "name": "DALL·E 2",
-          "url": "https://openai.com/product/dall-e-2"
-        },
         {
           "id": "x91c9ws4",
           "name": "DreamStudio",
