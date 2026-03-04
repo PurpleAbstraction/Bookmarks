@@ -84,6 +84,11 @@
           "id": "xuv87ylt",
           "name": "FAADroneZone - Recreational Flyer Dashboard",
           "url": "https://faadronezone.faa.gov/#/home"
+        },
+        {
+          "id": "x7t5nx4c",
+          "name": "Know Before You Fly",
+          "url": "http://www.knowbeforeyoufly.org/home"
         }
       ]
     },
@@ -569,11 +574,6 @@
       "name": "Drones",
       "open": true,
       "links": [
-        {
-          "id": "x7t5nx4c",
-          "name": "Know Before You Fly",
-          "url": "http://www.knowbeforeyoufly.org/home"
-        },
         {
           "id": "x4hygkmb",
           "name": "Tello Drone",
