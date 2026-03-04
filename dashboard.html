@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2028;
+    --border: #2a2d36;
+    --accent: #c8a96e;
+    --accent2: #7eb8c9;
+    --text: #e8e4dc;
+    --text-muted: #6b6f7a;
+    --text-dim: #9a9da8;
+    --danger: #c96e6e;
+    --success: #6ec98a;
+    --radius: 6px;
+    --transition: 180ms ease;
+  }
+  [data-theme="light"] {
+    --bg: #f2efe8;
+    --surface: #ffffff;
+    --surface2: #ebe8e0;
+    --border: #d4cfc4;
+    --accent: #9a7a3a;
+    --accent2: #3a7a9a;
+    --text: #1a1a1e;
+    --text-muted: #9a9590;
+    --text-dim: #6a6560;
+    --danger: #c94444;
+    --success: #3a9a5a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inconsolata', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr 320px;
+    grid-template-areas: "header header" "main aside";
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    gap: 0 28px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0 18px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .clock {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+  }
+
+  .search-wrap {
+    flex: 1;
+    position: relative;
+    max-width: 480px;
+    margin-left: auto;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px 8px 36px;
+    color: var(--text);
+    font-family: 'Inconsolata', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--text-muted); }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 7px 9px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 13px;
+    transition: all var(--transition);
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── MAIN BOOKMARKS AREA ── */
+  main { grid-area: main; }
+
+  .categories-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .add-category-btn {
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 12px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .add-category-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── CATEGORY CARD ── */
+  .category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color var(--transition);
+  }
+  .category:hover { border-color: var(--border); }
+  .category.drag-over { border-color: var(--accent); }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .category-header:hover { background: var(--surface2); }
+  .category.open .category-header { border-bottom-color: var(--border); }
+
+  .chevron {
+    color: var(--text-muted);
+    transition: transform var(--transition);
+    flex-shrink: 0;
+  }
+  .category.open .chevron { transform: rotate(90deg); }
+
+  .category-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .category-name-input {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    color: var(--text);
+    padding: 2px 8px;
+    flex: 1;
+    outline: none;
+  }
+
+  .category-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 2px 8px;
+  }
+
+  .cat-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  .category-header:hover .cat-actions { opacity: 1; }
+
+  .cat-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+  }
+  .cat-btn:hover { color: var(--accent); background: var(--surface2); }
+  .cat-btn.danger:hover { color: var(--danger); }
+
+  /* ── LINKS GRID ── */
+  .links-body {
+    display: none;
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .category.open .links-body { display: flex; }
+
+  .link-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    transition: all var(--transition);
+    position: relative;
+    group: true;
+  }
+  .link-chip:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: var(--surface);
+  }
+
+  .link-favicon {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  .link-edit-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 0 0 4px;
+    display: none;
+    align-items: center;
+    font-size: 11px;
+    transition: color var(--transition);
+  }
+  .link-chip:hover .link-edit-btn { display: flex; }
+  .link-edit-btn:hover { color: var(--accent); }
+
+  .link-del-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    display: none;
+    align-items: center;
+    font-size: 11px;
+    transition: color var(--transition);
+  }
+  .link-chip:hover .link-del-btn { display: flex; }
+  .link-del-btn:hover { color: var(--danger); }
+
+  /* Add link row */
+  .add-link-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    width: 100%;
+  }
+  .add-link-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 6px 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .add-link-input:focus { border-color: var(--accent); border-style: solid; }
+  .add-link-input::placeholder { color: var(--text-muted); }
+  .add-link-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 12px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    transition: all var(--transition);
+  }
+  .add-link-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .open-add { border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── EDIT MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .modal h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 8px 12px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field select option { background: var(--surface2); }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .btn {
+    padding: 8px 18px;
+    border-radius: var(--radius);
+    font-family: 'Inconsolata', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost { background: none; color: var(--text-dim); }
+  .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+  .btn-primary:hover { opacity: 0.85; }
+
+  /* ── ASIDE ── */
+  aside { grid-area: aside; display: flex; flex-direction: column; gap: 20px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Scratch pad */
+  #scratchpad {
+    width: 100%;
+    min-height: 160px;
+    background: var(--surface);
+    border: none;
+    color: var(--text);
+    font-family: 'Inconsolata', monospace;
+    font-size: 13px;
+    padding: 12px 14px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.7;
+  }
+  #scratchpad::placeholder { color: var(--text-muted); }
+
+  .pad-status {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-top: 1px solid var(--border);
+    min-height: 28px;
+  }
+
+  /* RSS */
+  .rss-url-row {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rss-url-row input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 6px 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .rss-url-row input:focus { border-color: var(--accent); }
+  .rss-url-row input::placeholder { color: var(--text-muted); }
+  .rss-load-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+  .rss-load-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .rss-items { padding: 6px 0; max-height: 320px; overflow-y: auto; }
+  .rss-items::-webkit-scrollbar { width: 4px; }
+  .rss-items::-webkit-scrollbar-track { background: transparent; }
+  .rss-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .rss-item {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+  .rss-item:last-child { border-bottom: none; }
+  .rss-item:hover { background: var(--surface2); }
+
+  .rss-item a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: color var(--transition);
+  }
+  .rss-item a:hover { color: var(--accent2); }
+
+  .rss-item-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .rss-placeholder {
+    padding: 20px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  /* No results */
+  .no-results {
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    display: none;
+  }
+
+  /* Accent line on left of categories */
+  .category { border-left: 3px solid transparent; }
+  .category:nth-child(1) { border-left-color: var(--accent); }
+  .category:nth-child(2) { border-left-color: var(--accent2); }
+  .category:nth-child(3) { border-left-color: #c96eb4; }
+  .category:nth-child(4) { border-left-color: #6ec98a; }
+  .category:nth-child(5) { border-left-color: #c9a06e; }
+  .category:nth-child(6) { border-left-color: #9e6ec9; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--success);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 200ms ease;
+    pointer-events: none;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; grid-template-areas: "header" "main" "aside"; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header>
+    <div class="logo">Nexus</div>
+    <div class="clock" id="clock">—</div>
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" type="text" placeholder="Search links…" autocomplete="off">
+    </div>
+    <div class="header-actions">
+      <span id="syncStatus" style="font-size:12px;font-family:'Inconsolata',monospace;color:var(--text-muted);cursor:pointer;" title="GitHub sync status" onclick="openTokenModal()">● GitHub</span>
+      <button class="icon-btn" id="themeToggle" title="Toggle theme">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        Theme
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Export bookmarks">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="categories-header">
+      <span class="section-label">Bookmarks</span>
+      <button class="add-category-btn" id="addCategoryBtn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Category
+      </button>
+    </div>
+    <div id="categoriesContainer"></div>
+    <div class="no-results" id="noResults">No links match your search.</div>
+  </main>
+
+  <aside>
+    <!-- Scratch Pad -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Scratch Pad</span>
+        <button class="icon-btn" id="clearPad" style="padding:3px 8px;font-size:11px;">Clear</button>
+      </div>
+      <textarea id="scratchpad" placeholder="Quick notes, ideas, temporary text… auto-saved."></textarea>
+      <div class="pad-status" id="padStatus"></div>
+    </div>
+
+    <!-- RSS -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">RSS Feed</span>
+        <button class="icon-btn rss-load-btn" id="rssRefresh" style="padding:3px 8px;font-size:11px;border:none;">↻ Refresh</button>
+      </div>
+      <div class="rss-url-row">
+        <input type="text" id="rssUrl" placeholder="Enter RSS feed URL…">
+        <button class="rss-load-btn" id="rssLoadBtn">Load</button>
+      </div>
+      <div class="rss-items" id="rssItems">
+        <div class="rss-placeholder">Enter an RSS feed URL above.<br>Results appear here.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- GitHub Token Modal -->
+<div class="modal-overlay" id="tokenModal">
+  <div class="modal">
+    <h3>GitHub Token</h3>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.7;">
+      A Personal Access Token lets Nexus save your bookmarks directly to GitHub.<br><br>
+      Create one at <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent2);">github.com/settings/tokens</a> — choose <strong>Tokens (classic)</strong>, enable the <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">repo</code> scope. It's stored only in this browser.
+    </p>
+    <div class="field">
+      <label>Personal Access Token</label>
+      <input type="password" id="tokenInput" placeholder="ghp_…" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeTokenModal()">Cancel</button>
+      <button class="btn btn-primary" id="tokenSave">Save Token</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit/Add Link Modal -->
+<div class="modal-overlay" id="linkModal">
+  <div class="modal">
+    <h3 id="modalTitle">Add Link</h3>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="modalName" placeholder="e.g. GitHub">
+    </div>
+    <div class="field">
+      <label>URL</label>
+      <input type="text" id="modalUrl" placeholder="https://…">
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="modalCategory"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── GITHUB CONFIG ─────────────────────────────────────────────────────
+const GH_USER   = 'PurpleAbstraction';
+const GH_REPO   = 'Bookmarks';
+const GH_BRANCH = 'main';
+const GH_FILE   = 'bookmarks.json';
+const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_RAW    = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/${GH_BRANCH}/${GH_FILE}`;
+
+// Token stored only in localStorage — never in the file itself
+function getToken() { return localStorage.getItem('nexus_gh_token') || ''; }
+function setToken(t) { localStorage.setItem('nexus_gh_token', t.trim()); }
+
+// Current SHA needed to write back to GitHub
+let _ghSha = null;
+
+// In-memory data
+let appData = { categories: [] };
+
+function uid() {
+  return 'x' + Math.random().toString(36).slice(2, 9);
+}
+
+// ── GITHUB READ ───────────────────────────────────────────────────────
+async function loadData() {
+  setStatus('loading');
+  try {
+    // Use API (not raw) so we get the SHA for writes
+    const headers = { 'Accept': 'application/vnd.github+json' };
+    if (getToken()) headers['Authorization'] = `Bearer ${getToken()}`;
+    const res = await fetch(GH_API + `?ref=${GH_BRANCH}&t=${Date.now()}`, { headers });
+    if (res.status === 404) {
+      // File doesn't exist yet — start fresh
+      appData = { categories: [] };
+      _ghSha = null;
+      setStatus('ready');
+      render();
+      showToast('No bookmarks.json found — starting fresh. Add a link to create it.');
+      return;
+    }
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const meta = await res.json();
+    _ghSha = meta.sha;
+    const decoded = atob(meta.content.replace(/\n/g, ''));
+    appData = JSON.parse(decoded);
+    setStatus('ready');
+    render();
+  } catch (err) {
+    setStatus('error', err.message);
+    // Fall back to localStorage cache if available
+    const cached = localStorage.getItem('nexus_cache');
+    if (cached) {
+      appData = JSON.parse(cached);
+      render();
+      showToast('Offline — showing cached data.');
+    }
+  }
+}
+
+// ── GITHUB WRITE ──────────────────────────────────────────────────────
+async function saveData() {
+  if (!getToken()) {
+    openTokenModal();
+    return;
+  }
+  // Cache locally immediately so UI stays snappy
+  localStorage.setItem('nexus_cache', JSON.stringify(appData));
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+  const body = {
+    message: `Update bookmarks — ${new Date().toISOString()}`,
+    content,
+    branch: GH_BRANCH,
+  };
+  if (_ghSha) body.sha = _ghSha;
+
+  try {
+    setStatus('saving');
+    const res = await fetch(GH_API, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${getToken()}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github+json',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || res.status);
+    }
+    const data = await res.json();
+    _ghSha = data.content.sha;
+    setStatus('saved');
+  } catch (err) {
+    setStatus('error', err.message);
+    showToast(`Save failed: ${err.message}`);
+  }
+}
+
+// ── STATUS INDICATOR ──────────────────────────────────────────────────
+function setStatus(state, msg) {
+  const el = document.getElementById('syncStatus');
+  const states = {
+    loading: { text: '↻ Loading…',  color: 'var(--text-muted)' },
+    saving:  { text: '↑ Saving…',   color: 'var(--accent2)' },
+    saved:   { text: '✓ Saved',     color: 'var(--success)' },
+    error:   { text: `✕ ${msg||'Error'}`, color: 'var(--danger)' },
+    ready:   { text: '● GitHub',    color: 'var(--text-muted)' },
+  };
+  const s = states[state] || states.ready;
+  el.textContent = s.text;
+  el.style.color = s.color;
+  if (state === 'saved') setTimeout(() => setStatus('ready'), 2500);
+}
+
+// ── TOKEN MODAL ───────────────────────────────────────────────────────
+function openTokenModal() {
+  document.getElementById('tokenModal').classList.add('open');
+  document.getElementById('tokenInput').value = getToken();
+  document.getElementById('tokenInput').focus();
+}
+
+function closeTokenModal() {
+  document.getElementById('tokenModal').classList.remove('open');
+}
+
+function uid() {
+  return 'x' + Math.random().toString(36).slice(2, 9);
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const d = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const t = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('clock').textContent = `${d}  ·  ${t}`;
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+// ── THEME ─────────────────────────────────────────────────────────────
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('nexus_theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('nexus_theme', next);
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── FAVICON ───────────────────────────────────────────────────────────
+function faviconUrl(url) {
+  try {
+    const host = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${host}&sz=32`;
+  } catch { return ''; }
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────
+function render(filter = '') {
+  const container = document.getElementById('categoriesContainer');
+  const noResults = document.getElementById('noResults');
+  container.innerHTML = '';
+  const q = filter.trim().toLowerCase();
+  let anyVisible = false;
+
+  appData.categories.forEach((cat, catIdx) => {
+    const filteredLinks = q
+      ? cat.links.filter(l => l.name.toLowerCase().includes(q) || l.url.toLowerCase().includes(q))
+      : cat.links;
+
+    if (q && filteredLinks.length === 0) return;
+    anyVisible = true;
+
+    const catEl = document.createElement('div');
+    catEl.className = 'category' + (cat.open || q ? ' open' : '');
+    catEl.dataset.catId = cat.id;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'category-header';
+
+    const chevron = `<svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+    const nameSpan = `<span class="category-name">${cat.name}</span>`;
+    const countSpan = `<span class="category-count">${cat.links.length}</span>`;
+
+    const catActions = document.createElement('div');
+    catActions.className = 'cat-actions';
+    catActions.innerHTML = `
+      <button class="cat-btn rename-cat" title="Rename" data-cat="${cat.id}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="cat-btn danger delete-cat" title="Delete" data-cat="${cat.id}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>`;
+
+    hdr.innerHTML = chevron + nameSpan + countSpan;
+    hdr.appendChild(catActions);
+
+    // Toggle open
+    hdr.addEventListener('click', (e) => {
+      if (e.target.closest('.cat-actions')) return;
+      const nameInput = hdr.querySelector('.category-name-input');
+      if (nameInput) return;
+      cat.open = !cat.open;
+      saveData();
+      catEl.classList.toggle('open', cat.open);
+    });
+
+    catEl.appendChild(hdr);
+
+    // Links body
+    const body = document.createElement('div');
+    body.className = 'links-body';
+
+    filteredLinks.forEach(link => {
+      const chip = document.createElement('div');
+      chip.className = 'link-chip-wrap';
+      chip.style.display = 'flex';
+
+      const a = document.createElement('a');
+      a.className = 'link-chip';
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.dataset.linkId = link.id;
+      a.dataset.catId = cat.id;
+
+      const fav = faviconUrl(link.url);
+      a.innerHTML = `
+        ${fav ? `<img class="link-favicon" src="${fav}" alt="" onerror="this.style.display='none'">` : ''}
+        <span>${link.name}</span>
+        <button class="link-edit-btn" title="Edit link">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="link-del-btn" title="Delete link">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>`;
+
+      // Edit link
+      a.querySelector('.link-edit-btn').addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        openLinkModal(cat.id, link.id);
+      });
+
+      // Delete link
+      a.querySelector('.link-del-btn').addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (confirm(`Delete "${link.name}"?`)) {
+          cat.links = cat.links.filter(l => l.id !== link.id);
+          saveData(); render(document.getElementById('search').value);
+          showToast('Link deleted.');
+        }
+      });
+
+      body.appendChild(a);
+    });
+
+    // Add link row
+    const addRow = document.createElement('div');
+    addRow.className = 'add-link-row';
+    addRow.innerHTML = `
+      <button class="add-link-btn open-add" data-cat="${cat.id}">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add link
+      </button>`;
+    addRow.querySelector('.open-add').addEventListener('click', () => {
+      openLinkModal(cat.id, null);
+    });
+    body.appendChild(addRow);
+    catEl.appendChild(body);
+
+    // Rename handler
+    catEl.querySelector('.rename-cat').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const nameEl = hdr.querySelector('.category-name');
+      const input = document.createElement('input');
+      input.className = 'category-name-input';
+      input.value = cat.name;
+      nameEl.replaceWith(input);
+      input.focus(); input.select();
+      function finishRename() {
+        const val = input.value.trim();
+        if (val) { cat.name = val; saveData(); }
+        render(document.getElementById('search').value);
+      }
+      input.addEventListener('blur', finishRename);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { input.blur(); }
+        if (e.key === 'Escape') { cat.name = cat.name; render(document.getElementById('search').value); }
+      });
+    });
+
+    // Delete category
+    catEl.querySelector('.delete-cat').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm(`Delete category "${cat.name}" and all its links?`)) {
+        appData.categories = appData.categories.filter(c => c.id !== cat.id);
+        saveData(); render(document.getElementById('search').value);
+        showToast('Category deleted.');
+      }
+    });
+
+    container.appendChild(catEl);
+  });
+
+  noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+}
+
+// ── ADD CATEGORY ──────────────────────────────────────────────────────
+document.getElementById('addCategoryBtn').addEventListener('click', () => {
+  const name = prompt('Category name:');
+  if (name && name.trim()) {
+    appData.categories.push({ id: uid(), name: name.trim(), open: true, links: [] });
+    saveData(); render();
+    showToast('Category added.');
+  }
+});
+
+// ── SEARCH ────────────────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  render(e.target.value);
+});
+
+// ── LINK MODAL ────────────────────────────────────────────────────────
+let _editCatId = null, _editLinkId = null;
+
+function openLinkModal(catId, linkId) {
+  _editCatId = catId; _editLinkId = linkId;
+  const modal = document.getElementById('linkModal');
+  const title = document.getElementById('modalTitle');
+  const nameInput = document.getElementById('modalName');
+  const urlInput = document.getElementById('modalUrl');
+  const catSel = document.getElementById('modalCategory');
+
+  catSel.innerHTML = appData.categories.map(c =>
+    `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`
+  ).join('');
+
+  if (linkId) {
+    const cat = appData.categories.find(c => c.id === catId);
+    const link = cat.links.find(l => l.id === linkId);
+    title.textContent = 'Edit Link';
+    nameInput.value = link.name;
+    urlInput.value = link.url;
+  } else {
+    title.textContent = 'Add Link';
+    nameInput.value = '';
+    urlInput.value = '';
+  }
+
+  modal.classList.add('open');
+  nameInput.focus();
+}
+
+document.getElementById('modalCancel').addEventListener('click', () => {
+  document.getElementById('linkModal').classList.remove('open');
+});
+
+document.getElementById('linkModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('linkModal'))
+    document.getElementById('linkModal').classList.remove('open');
+});
+
+document.getElementById('modalSave').addEventListener('click', () => {
+  const name = document.getElementById('modalName').value.trim();
+  let url = document.getElementById('modalUrl').value.trim();
+  const newCatId = document.getElementById('modalCategory').value;
+
+  if (!name || !url) { alert('Name and URL are required.'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+  if (_editLinkId) {
+    // Edit: possibly moved to different category
+    const oldCat = appData.categories.find(c => c.id === _editCatId);
+    const link = oldCat.links.find(l => l.id === _editLinkId);
+    if (_editCatId !== newCatId) {
+      oldCat.links = oldCat.links.filter(l => l.id !== _editLinkId);
+      const newCat = appData.categories.find(c => c.id === newCatId);
+      link.name = name; link.url = url;
+      newCat.links.push(link);
+    } else {
+      link.name = name; link.url = url;
+    }
+    showToast('Link saved.');
+  } else {
+    const cat = appData.categories.find(c => c.id === newCatId);
+    cat.links.push({ id: uid(), name, url });
+    showToast('Link added.');
+  }
+
+  saveData();
+  document.getElementById('linkModal').classList.remove('open');
+  render(document.getElementById('search').value);
+});
+
+// Keyboard shortcut: Escape closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('linkModal').classList.remove('open');
+});
+
+// ── EXPORT ────────────────────────────────────────────────────────────
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'nexus-bookmarks.json'; a.click();
+  showToast('Exported!');
+});
+
+// ── SCRATCH PAD ───────────────────────────────────────────────────────
+const pad = document.getElementById('scratchpad');
+const padStatus = document.getElementById('padStatus');
+pad.value = localStorage.getItem('nexus_scratch') || '';
+let padTimer;
+pad.addEventListener('input', () => {
+  clearTimeout(padTimer);
+  padStatus.textContent = 'Saving…';
+  padTimer = setTimeout(() => {
+    localStorage.setItem('nexus_scratch', pad.value);
+    padStatus.textContent = 'Saved.';
+    setTimeout(() => { padStatus.textContent = ''; }, 1500);
+  }, 800);
+});
+
+document.getElementById('clearPad').addEventListener('click', () => {
+  if (pad.value && confirm('Clear scratch pad?')) {
+    pad.value = ''; localStorage.removeItem('nexus_scratch');
+    showToast('Scratch pad cleared.');
+  }
+});
+
+// ── RSS ───────────────────────────────────────────────────────────────
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+let currentRssUrl = localStorage.getItem('nexus_rss_url') || '';
+if (currentRssUrl) { document.getElementById('rssUrl').value = currentRssUrl; loadRss(currentRssUrl); }
+
+function loadRss(url) {
+  if (!url) return;
+  document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">Loading…</div>';
+  fetch(RSS2JSON + encodeURIComponent(url))
+    .then(r => r.json())
+    .then(data => {
+      if (data.status !== 'ok') throw new Error('Bad feed');
+      const items = data.items.slice(0, 15);
+      if (!items.length) { document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">No items found.</div>'; return; }
+      document.getElementById('rssItems').innerHTML = items.map(item => {
+        const date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+        return `<div class="rss-item">
+          <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>
+          ${date ? `<div class="rss-item-date">${date}</div>` : ''}
+        </div>`;
+      }).join('');
+    })
+    .catch(() => {
+      document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">Could not load feed.<br>Check the URL or try another.</div>';
+    });
+}
+
+document.getElementById('rssLoadBtn').addEventListener('click', () => {
+  const url = document.getElementById('rssUrl').value.trim();
+  if (!url) return;
+  localStorage.setItem('nexus_rss_url', url);
+  currentRssUrl = url;
+  loadRss(url);
+});
+
+document.getElementById('rssUrl').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('rssLoadBtn').click();
+});
+
+document.getElementById('rssRefresh').addEventListener('click', () => {
+  if (currentRssUrl) loadRss(currentRssUrl);
+});
+
+// ── TOKEN SAVE ────────────────────────────────────────────────────────
+document.getElementById('tokenSave').addEventListener('click', () => {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) { alert('Please enter a token.'); return; }
+  setToken(val);
+  closeTokenModal();
+  showToast('Token saved. Syncing…');
+  loadData();
+});
+
+// ── INITIAL LOAD ──────────────────────────────────────────────────────
+// Prompt for token on first visit if none stored
+if (!getToken()) {
+  appData = { categories: [] };
+  render();
+  openTokenModal();
+} else {
+  loadData();
+}
+</script>
+</body>
+</html>
