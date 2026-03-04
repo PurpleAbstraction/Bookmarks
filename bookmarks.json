@@ -156,6 +156,11 @@
           "id": "xkedcuh4",
           "name": "OpenAI",
           "url": "https://openai.com/"
+        },
+        {
+          "id": "x44h0a5c",
+          "name": "OpenAI API - Playground",
+          "url": "https://platform.openai.com/playground"
         }
       ]
     },
@@ -567,11 +572,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "x44h0a5c",
-          "name": "OpenAI API - Playground",
-          "url": "https://platform.openai.com/playground"
-        },
         {
           "id": "xce858lp",
           "name": "OpenAI API - User Settings",
