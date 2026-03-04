@@ -607,6 +607,69 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
 
+  /* ── IMPORT MODAL ── */
+  .import-modal { width: 680px; max-width: 96vw; max-height: 85vh; display: flex; flex-direction: column; }
+  .import-drop {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-bottom: 4px;
+  }
+  .import-drop:hover, .import-drop.dragover { border-color: var(--accent); background: var(--surface2); }
+  .import-drop p { color: var(--text-muted); font-size: 13px; line-height: 1.8; }
+  .import-drop strong { color: var(--accent); }
+  #importFileInput { display: none; }
+
+  .import-preview { display: none; flex-direction: column; flex: 1; overflow: hidden; margin-top: 12px; }
+  .import-preview.visible { display: flex; }
+  .import-preview-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; flex-shrink: 0;
+  }
+  .import-stats { font-size: 12px; color: var(--text-muted); }
+  .import-stats strong { color: var(--accent2); }
+
+  .import-cats { overflow-y: auto; flex: 1; padding-right: 4px; }
+  .import-cats::-webkit-scrollbar { width: 4px; }
+  .import-cats::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .import-cat-row {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .import-cat-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+  }
+  .import-cat-head input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; flex-shrink: 0; cursor: pointer; }
+  .import-cat-name-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--text); padding: 3px 8px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; outline: none;
+    transition: border-color var(--transition);
+  }
+  .import-cat-name-input:focus { border-color: var(--accent); }
+  .import-merge-sel {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 3px;
+    color: var(--text-dim); padding: 3px 8px; font-family: 'Inconsolata', monospace;
+    font-size: 11px; outline: none; cursor: pointer;
+  }
+  .import-cat-links { padding: 6px 12px 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .import-link-tag {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 2px 8px; font-size: 12px; color: var(--text-dim);
+  }
+  .import-link-tag.dupe { opacity: 0.4; text-decoration: line-through; }
+  .import-link-tag.dupe::after { content: ' (dupe)'; font-size: 10px; color: var(--text-muted); }
+
   @media (max-width: 860px) {
     .shell { grid-template-columns: 1fr; grid-template-areas: "header" "main" "aside"; }
   }
@@ -628,8 +691,12 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         Theme
       </button>
-      <button class="icon-btn" id="exportBtn" title="Export bookmarks">
+      <button class="icon-btn" id="importBtn" title="Import bookmarks from browser export">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Import
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Export bookmarks">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 10 12 15 7 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export
       </button>
     </div>
@@ -673,6 +740,34 @@
       </div>
     </div>
   </aside>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal import-modal">
+    <h3>Import Bookmarks</h3>
+    <div class="import-drop" id="importDrop">
+      <p>
+        <strong>Drop your browser bookmark export here</strong><br>
+        or click to choose a file<br>
+        <span style="font-size:11px;opacity:.6;">Supports Safari &amp; Firefox HTML exports</span>
+      </p>
+      <input type="file" id="importFileInput" accept=".html,.htm">
+    </div>
+    <div class="import-preview" id="importPreview">
+      <div class="import-preview-header">
+        <div class="import-stats" id="importStats"></div>
+        <label style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input type="checkbox" id="skipDupes" checked style="accent-color:var(--accent);"> Skip duplicates
+        </label>
+      </div>
+      <div class="import-cats" id="importCats"></div>
+    </div>
+    <div class="modal-actions" style="margin-top:14px;flex-shrink:0;">
+      <button class="btn btn-ghost" id="importCancel">Cancel</button>
+      <button class="btn btn-primary" id="importCommit" style="display:none;">Import Selected</button>
+    </div>
+  </div>
 </div>
 
 <!-- GitHub Token Modal -->
@@ -1201,6 +1296,208 @@ document.getElementById('rssUrl').addEventListener('keydown', e => {
 
 document.getElementById('rssRefresh').addEventListener('click', () => {
   if (currentRssUrl) loadRss(currentRssUrl);
+});
+
+// ── IMPORT ────────────────────────────────────────────────────────────
+let _importParsed = []; // [{name, links:[{name,url}]}]
+
+function openImportModal() {
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('importPreview').classList.remove('visible');
+  document.getElementById('importCommit').style.display = 'none';
+  document.getElementById('importDrop').style.display = 'block';
+  document.getElementById('importFileInput').value = '';
+  _importParsed = [];
+}
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+
+document.getElementById('importBtn').addEventListener('click', openImportModal);
+document.getElementById('importCancel').addEventListener('click', closeImportModal);
+document.getElementById('importModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('importModal')) closeImportModal();
+});
+
+// File drop & pick
+const importDrop = document.getElementById('importDrop');
+importDrop.addEventListener('click', () => document.getElementById('importFileInput').click());
+importDrop.addEventListener('dragover', e => { e.preventDefault(); importDrop.classList.add('dragover'); });
+importDrop.addEventListener('dragleave', () => importDrop.classList.remove('dragover'));
+importDrop.addEventListener('drop', e => {
+  e.preventDefault(); importDrop.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processImportFile(file);
+});
+document.getElementById('importFileInput').addEventListener('change', e => {
+  if (e.target.files[0]) processImportFile(e.target.files[0]);
+});
+
+function processImportFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => parseBookmarkHTML(e.target.result);
+  reader.readAsText(file);
+}
+
+function parseBookmarkHTML(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Recursively parse DL structure
+  function parseDL(dl, depth) {
+    const results = [];
+    if (!dl) return results;
+    const children = Array.from(dl.children);
+    let i = 0;
+    while (i < children.length) {
+      const dt = children[i];
+      if (dt.tagName !== 'DT') { i++; continue; }
+      const h3 = dt.querySelector(':scope > h3');
+      const a = dt.querySelector(':scope > a');
+      if (h3) {
+        // It's a folder
+        const name = h3.textContent.trim();
+        // Skip browser default folders
+        const skip = ['bookmarks toolbar','bookmarks menu','other bookmarks',
+                      'mobile bookmarks','reading list','favorites bar','toolbar'];
+        if (skip.includes(name.toLowerCase())) { i++; continue; }
+        // Find following DL sibling
+        const nextDL = dt.querySelector('dl') || (children[i+1] && children[i+1].tagName === 'DL' ? children[i+1] : null);
+        if (depth === 0) {
+          // Top-level folder → becomes a category, flatten sub-folders into it
+          const links = collectLinks(nextDL || dt);
+          if (links.length) results.push({ name, links });
+        } else {
+          // Nested folder → flatten links up with prefixed names
+          const links = collectLinks(nextDL || dt, name);
+          results.push(...links.map(l => ({ _flat: true, ...l })));
+        }
+      } else if (a) {
+        results.push({ _flat: true, name: a.textContent.trim(), url: a.href });
+      }
+      i++;
+    }
+    return results;
+  }
+
+  function collectLinks(container, prefix) {
+    if (!container) return [];
+    const links = [];
+    container.querySelectorAll('a').forEach(a => {
+      const url = a.href;
+      if (!url || url.startsWith('place:') || url.startsWith('javascript:')) return;
+      const name = prefix ? `${prefix} - ${a.textContent.trim()}` : a.textContent.trim();
+      links.push({ name, url });
+    });
+    return links;
+  }
+
+  // Find root DL
+  const rootDL = doc.querySelector('dl');
+  _importParsed = parseDL(rootDL, 0);
+
+  // Any flat items at root level → put into "Favorites"
+  const flatItems = _importParsed.filter(x => x._flat);
+  const catItems = _importParsed.filter(x => !x._flat);
+  if (flatItems.length) catItems.unshift({ name: 'Favorites', links: flatItems });
+  _importParsed = catItems;
+
+  renderImportPreview();
+}
+
+function renderImportPreview() {
+  const skipDupes = document.getElementById('skipDupes').checked;
+  const existingUrls = new Set();
+  appData.categories.forEach(c => c.links.forEach(l => existingUrls.add(l.url)));
+
+  // Deduplicate within import itself
+  const seenUrls = new Set();
+
+  const container = document.getElementById('importCats');
+  container.innerHTML = '';
+
+  let totalLinks = 0, dupeCount = 0;
+
+  _importParsed.forEach((cat, idx) => {
+    const row = document.createElement('div');
+    row.className = 'import-cat-row';
+
+    // Build merge options from existing categories
+    const mergeOpts = appData.categories.map(c =>
+      `<option value="${c.id}">→ Merge into: ${c.name}</option>`
+    ).join('');
+
+    row.innerHTML = `
+      <div class="import-cat-head">
+        <input type="checkbox" class="import-cat-check" data-idx="${idx}" checked>
+        <input type="text" class="import-cat-name-input" data-idx="${idx}" value="${cat.name}">
+        <select class="import-merge-sel" data-idx="${idx}">
+          <option value="new">New category</option>
+          ${mergeOpts}
+        </select>
+      </div>
+      <div class="import-cat-links" id="import-links-${idx}"></div>`;
+
+    const linksDiv = row.querySelector(`#import-links-${idx}`);
+    cat.links.forEach(link => {
+      const isDupe = existingUrls.has(link.url) || seenUrls.has(link.url);
+      if (!isDupe) seenUrls.add(link.url);
+      if (isDupe) dupeCount++;
+      totalLinks++;
+      const tag = document.createElement('div');
+      tag.className = 'import-link-tag' + (isDupe ? ' dupe' : '');
+      tag.title = link.url;
+      tag.textContent = link.name;
+      linksDiv.appendChild(tag);
+    });
+
+    container.appendChild(row);
+  });
+
+  document.getElementById('importStats').innerHTML =
+    `Found <strong>${totalLinks}</strong> links in <strong>${_importParsed.length}</strong> categories` +
+    (dupeCount ? ` · <span style="color:var(--text-muted)">${dupeCount} duplicates</span>` : '');
+
+  document.getElementById('importPreview').classList.add('visible');
+  document.getElementById('importDrop').style.display = 'none';
+  document.getElementById('importCommit').style.display = '';
+}
+
+document.getElementById('skipDupes').addEventListener('change', renderImportPreview);
+
+document.getElementById('importCommit').addEventListener('click', () => {
+  const skipDupes = document.getElementById('skipDupes').checked;
+  const existingUrls = new Set();
+  appData.categories.forEach(c => c.links.forEach(l => existingUrls.add(l.url)));
+  const seenUrls = new Set([...existingUrls]);
+
+  let added = 0;
+
+  _importParsed.forEach((cat, idx) => {
+    const checked = document.querySelector(`.import-cat-check[data-idx="${idx}"]`).checked;
+    if (!checked) return;
+    const name = document.querySelector(`.import-cat-name-input[data-idx="${idx}"]`).value.trim() || cat.name;
+    const mergeVal = document.querySelector(`.import-merge-sel[data-idx="${idx}"]`).value;
+
+    const links = cat.links
+      .filter(l => !skipDupes || !seenUrls.has(l.url))
+      .map(l => { seenUrls.add(l.url); added++; return { id: uid(), name: l.name, url: l.url }; });
+
+    if (!links.length) return;
+
+    if (mergeVal === 'new') {
+      appData.categories.push({ id: uid(), name, open: true, links });
+    } else {
+      const target = appData.categories.find(c => c.id === mergeVal);
+      if (target) target.links.push(...links);
+    }
+  });
+
+  saveData();
+  closeImportModal();
+  render();
+  showToast(`Imported ${added} link${added !== 1 ? 's' : ''}!`);
 });
 
 // ── TOKEN SAVE ────────────────────────────────────────────────────────
