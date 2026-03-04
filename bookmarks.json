@@ -141,6 +141,11 @@
           "id": "x7lywk92",
           "name": "DALL·E 2",
           "url": "https://openai.com/product/dall-e-2"
+        },
+        {
+          "id": "x91c9ws4",
+          "name": "DreamStudio",
+          "url": "https://beta.dreamstudio.ai/generate"
         }
       ]
     },
@@ -552,11 +557,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "x91c9ws4",
-          "name": "DreamStudio",
-          "url": "https://beta.dreamstudio.ai/generate"
-        },
         {
           "id": "x299v4m1",
           "name": "Midjourney",
