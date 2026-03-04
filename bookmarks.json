@@ -45,11 +45,6 @@
       "open": true,
       "links": [
         {
-          "id": "xgzh5vs2",
-          "name": "Amazon",
-          "url": "https://www.amazon.com/"
-        },
-        {
           "id": "xypclm76",
           "name": "Apple",
           "url": "http://www.apple.com/"
@@ -819,6 +814,11 @@
           "id": "xhnje3c6",
           "name": "Uwajimaya",
           "url": "https://www.uwajimaya.com/departments/"
+        },
+        {
+          "id": "xgzh5vs2",
+          "name": "Amazon",
+          "url": "https://www.amazon.com/"
         }
       ]
     }
