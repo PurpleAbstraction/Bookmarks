@@ -146,6 +146,11 @@
           "id": "x91c9ws4",
           "name": "DreamStudio",
           "url": "https://beta.dreamstudio.ai/generate"
+        },
+        {
+          "id": "x299v4m1",
+          "name": "Midjourney",
+          "url": "https://www.midjourney.com/app/"
         }
       ]
     },
@@ -557,11 +562,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "x299v4m1",
-          "name": "Midjourney",
-          "url": "https://www.midjourney.com/app/"
-        },
         {
           "id": "xkedcuh4",
           "name": "OpenAI",
