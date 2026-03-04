@@ -20,7 +20,7 @@
     {
       "id": "cat2",
       "name": "AI",
-      "open": true,
+      "open": false,
       "links": [
         {
           "id": "l3",
