@@ -635,7 +635,7 @@
     {
       "id": "xiiyy9yh",
       "name": "Shopping",
-      "open": false,
+      "open": true,
       "links": [
         {
           "id": "xgzh5vs2",
@@ -821,11 +821,6 @@
           "id": "x5f0cj01",
           "name": "Ulta Beauty",
           "url": "https://www.ulta.com/"
-        },
-        {
-          "id": "xmrnqjwi",
-          "name": "UniWigs",
-          "url": "https://www.uniwigs.com/"
         },
         {
           "id": "xhnje3c6",
