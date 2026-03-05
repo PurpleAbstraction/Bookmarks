@@ -210,11 +210,6 @@
           "url": "https://support.apple.com/guide/mac-help/erase-your-mac-mchl7676b710/15.0/mac/15.0"
         },
         {
-          "id": "x8anwh58",
-          "name": "Best Buy",
-          "url": "https://www.bestbuy.com/"
-        },
-        {
           "id": "xazxp8km",
           "name": "BitWarden",
           "url": "https://vault.bitwarden.com/"
@@ -791,6 +786,11 @@
           "id": "xgzh5vs2",
           "name": "Amazon",
           "url": "https://www.amazon.com/"
+        },
+        {
+          "id": "x8anwh58",
+          "name": "Best Buy",
+          "url": "https://www.bestbuy.com/"
         }
       ]
     }
