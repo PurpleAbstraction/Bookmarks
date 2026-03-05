@@ -535,6 +535,11 @@
           "id": "xsgy732z",
           "name": "SimHub",
           "url": "http://192.168.1.32:8888/"
+        },
+        {
+          "id": "xrwzbqru",
+          "name": "This Week in Video Games",
+          "url": "https://thisweekinvideogames.com/"
         }
       ]
     },
