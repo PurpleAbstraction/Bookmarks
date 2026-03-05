@@ -161,6 +161,11 @@
           "id": "x44h0a5c",
           "name": "OpenAI API - Playground",
           "url": "https://platform.openai.com/playground"
+        },
+        {
+          "id": "xce858lp",
+          "name": "OpenAI API - User Settings",
+          "url": "https://platform.openai.com/account/profile"
         }
       ]
     },
@@ -572,11 +577,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "xce858lp",
-          "name": "OpenAI API - User Settings",
-          "url": "https://platform.openai.com/account/profile"
-        },
         {
           "id": "x0kje665",
           "name": "SOUNDRAW - AI Music Generator",
