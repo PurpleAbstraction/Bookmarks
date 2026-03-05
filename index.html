@@ -111,7 +111,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 8px 12px 8px 36px;
+    padding: 8px 30px 8px 36px;
     color: var(--text);
     font-family: 'Inconsolata', monospace;
     font-size: 14px;
@@ -120,6 +120,7 @@
   }
   #search:focus { border-color: var(--accent); }
   #search::placeholder { color: var(--text-muted); }
+  #searchClear:hover { color: var(--text) !important; }
 
   .header-actions {
     display: flex;
@@ -684,6 +685,9 @@
     <div class="search-wrap">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input id="search" type="text" placeholder="Search links…" autocomplete="off">
+      <button id="searchClear" title="Clear search" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;padding:2px;display:none;align-items:center;transition:color 180ms ease;" >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="header-actions">
       <span id="syncStatus" style="font-size:12px;font-family:'Inconsolata',monospace;color:var(--text-muted);cursor:pointer;" title="GitHub sync status" onclick="openTokenModal()">● GitHub</span>
@@ -817,7 +821,7 @@
 <script>
 // ── GITHUB CONFIG ─────────────────────────────────────────────────────
 const GH_USER   = 'PurpleAbstraction';
-const GH_REPO   = 'Dashboard';
+const GH_REPO   = 'Bookmarks';
 const GH_BRANCH = 'main';
 const GH_FILE   = 'bookmarks.json';
 const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1144,8 +1148,17 @@ document.getElementById('addCategoryBtn').addEventListener('click', () => {
 });
 
 // ── SEARCH ────────────────────────────────────────────────────────────
+const searchClear = document.getElementById('searchClear');
 document.getElementById('search').addEventListener('input', e => {
   render(e.target.value);
+  searchClear.style.display = e.target.value ? 'flex' : 'none';
+});
+searchClear.addEventListener('click', () => {
+  const s = document.getElementById('search');
+  s.value = '';
+  s.focus();
+  searchClear.style.display = 'none';
+  render('');
 });
 
 // ── LINK MODAL ────────────────────────────────────────────────────────
