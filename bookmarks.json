@@ -176,6 +176,11 @@
           "id": "xr0suwwd",
           "name": "Stable Diffusion - Hugging Face",
           "url": "https://huggingface.co/spaces/stabilityai/stable-diffusion"
+        },
+        {
+          "id": "xhqpz49h",
+          "name": "Prompt Engineering Guide",
+          "url": "https://www.promptingguide.ai/"
         }
       ]
     },
@@ -587,11 +592,6 @@
       "name": "AI Tools",
       "open": true,
       "links": [
-        {
-          "id": "xhqpz49h",
-          "name": "Prompt Engineering Guide",
-          "url": "https://www.promptingguide.ai/"
-        },
         {
           "id": "x2a9mm5c",
           "name": "Zapier - Automation",
