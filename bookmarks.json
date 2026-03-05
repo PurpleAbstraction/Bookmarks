@@ -215,6 +215,11 @@
           "id": "xby883hl",
           "name": "Time and Date",
           "url": "https://www.timeanddate.com/"
+        },
+        {
+          "id": "xc8ica2z",
+          "name": "Proton Calendar",
+          "url": "https://calendar.proton.me/"
         }
       ]
     },
