@@ -829,10 +829,16 @@
   <main>
     <div class="categories-header">
       <span class="section-label">Bookmarks</span>
-      <button class="add-category-btn" id="addCategoryBtn">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        New Category
-      </button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="add-category-btn" id="sortCatsBtn" title="Sort categories A–Z">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/></svg>
+          Sort A–Z
+        </button>
+        <button class="add-category-btn" id="addCategoryBtn">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Category
+        </button>
+      </div>
     </div>
     <div id="categoriesContainer"></div>
     <div class="no-results" id="noResults">No links match your search.</div>
@@ -1743,6 +1749,18 @@ document.getElementById('webSearchClear').addEventListener('click', () => {
 
 // Init engine state
 setEngine(_activeEngine);
+
+// ── SORT ──────────────────────────────────────────────────────────────
+document.getElementById('sortCatsBtn').addEventListener('click', () => {
+  if (!confirm('Sort all categories and their links alphabetically?')) return;
+  appData.categories.sort((a, b) => a.name.localeCompare(b.name));
+  appData.categories.forEach(cat => {
+    cat.links.sort((a, b) => a.name.localeCompare(b.name));
+  });
+  saveData();
+  render(document.getElementById('search').value);
+  showToast('Sorted A–Z!');
+});
 
 // ── TOKEN SAVE ────────────────────────────────────────────────────────
 document.getElementById('tokenSave').addEventListener('click', () => {
