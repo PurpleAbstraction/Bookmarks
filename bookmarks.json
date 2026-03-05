@@ -31,6 +31,11 @@
           "url": "https://www.midjourney.com/app/"
         },
         {
+          "id": "xfwdzp73",
+          "name": "Open WebUI",
+          "url": "https://docs.openwebui.com/"
+        },
+        {
           "id": "xkedcuh4",
           "name": "OpenAI",
           "url": "https://openai.com/"
@@ -69,11 +74,6 @@
           "id": "x2a9mm5c",
           "name": "Zapier - Automation",
           "url": "https://zapier.com/"
-        },
-        {
-          "id": "xfwdzp73",
-          "name": "Open WebUI",
-          "url": "https://docs.openwebui.com/"
         }
       ]
     },
@@ -182,6 +182,11 @@
           "url": "https://vault.bitwarden.com/"
         },
         {
+          "id": "x2pzn5rm",
+          "name": "Fast - Speed Test",
+          "url": "https://fast.com/"
+        },
+        {
           "id": "xsf7mejw",
           "name": "Gmail",
           "url": "https://www.google.com/gmail/"
@@ -207,6 +212,16 @@
           "url": "https://proton.me/"
         },
         {
+          "id": "xc8ica2z",
+          "name": "Proton Calendar",
+          "url": "https://calendar.proton.me/"
+        },
+        {
+          "id": "xsh5mnc5",
+          "name": "Proton Drive",
+          "url": "https://drive.proton.me/"
+        },
+        {
           "id": "xuxvtz1u",
           "name": "Proton Mail",
           "url": "https://mail.proton.me/"
@@ -220,21 +235,6 @@
           "id": "xby883hl",
           "name": "Time and Date",
           "url": "https://www.timeanddate.com/"
-        },
-        {
-          "id": "xc8ica2z",
-          "name": "Proton Calendar",
-          "url": "https://calendar.proton.me/"
-        },
-        {
-          "id": "xsh5mnc5",
-          "name": "Proton Drive",
-          "url": "https://drive.proton.me/"
-        },
-        {
-          "id": "x2pzn5rm",
-          "name": "Fast - Speed Test",
-          "url": "https://fast.com/"
         }
       ]
     },
