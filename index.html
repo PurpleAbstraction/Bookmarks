@@ -843,6 +843,7 @@
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">Web Search</span>
+        <button class="icon-btn" id="webSearchClear" style="padding:3px 8px;font-size:11px;">Clear</button>
       </div>
       <div class="search-engines">
         <button class="engine-btn active" data-engine="ddg">DDG</button>
@@ -1732,6 +1733,12 @@ document.getElementById('webSearchGo').addEventListener('click', doWebSearch);
 
 document.getElementById('webSearchInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') doWebSearch();
+});
+
+document.getElementById('webSearchClear').addEventListener('click', () => {
+  const input = document.getElementById('webSearchInput');
+  input.value = '';
+  input.focus();
 });
 
 // Init engine state
