@@ -181,6 +181,11 @@
           "id": "xhqpz49h",
           "name": "Prompt Engineering Guide",
           "url": "https://www.promptingguide.ai/"
+        },
+        {
+          "id": "x2a9mm5c",
+          "name": "Zapier - Automation",
+          "url": "https://zapier.com/"
         }
       ]
     },
@@ -591,13 +596,7 @@
       "id": "x5uzn7og",
       "name": "AI Tools",
       "open": true,
-      "links": [
-        {
-          "id": "x2a9mm5c",
-          "name": "Zapier - Automation",
-          "url": "https://zapier.com/"
-        }
-      ]
+      "links": []
     },
     {
       "id": "xiiyy9yh",
