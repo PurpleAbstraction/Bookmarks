@@ -880,7 +880,8 @@
           "url": "https://www.wholefoodsmarket.com/"
         }
       ],
-      "pinned": false
+      "pinned": false,
+      "color": null
     }
   ]
 }
