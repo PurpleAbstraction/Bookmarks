@@ -164,7 +164,7 @@
           "url": "https://www.youtube.com/"
         }
       ],
-      "pinned": true,
+      "pinned": false,
       "color": "#c96e6e"
     },
     {
@@ -667,7 +667,7 @@
         }
       ],
       "color": "#9e6ec9",
-      "pinned": false
+      "pinned": true
     },
     {
       "id": "xiiyy9yh",
