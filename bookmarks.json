@@ -453,7 +453,8 @@
           "url": "https://x4-foundations-wiki.fandom.com/wiki/Full_ships_list"
         }
       ],
-      "pinned": false
+      "pinned": false,
+      "color": "#6e9ec9"
     },
     {
       "id": "cat1",
