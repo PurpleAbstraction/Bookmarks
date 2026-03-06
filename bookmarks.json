@@ -125,7 +125,8 @@
           "url": "https://travel.state.gov/content/travel/en/passports/how-apply/forms.html"
         }
       ],
-      "pinned": false
+      "pinned": false,
+      "color": "#6ec98a"
     },
     {
       "id": "xkmtcjnp",
