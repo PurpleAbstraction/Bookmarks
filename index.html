@@ -499,13 +499,63 @@
   }
 
   /* RSS */
-  .rss-url-row {
+  .rss-feed-list {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .rss-feed-list::-webkit-scrollbar { width: 4px; }
+  .rss-feed-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .rss-feed-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background var(--transition);
+  }
+  .rss-feed-row:hover { background: var(--surface2); }
+
+  .rss-feed-name {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: color var(--transition);
+  }
+  .rss-feed-name:hover { color: var(--accent2); }
+  .rss-feed-row.active .rss-feed-name { color: var(--accent2); font-weight: 500; }
+
+  .rss-feed-del {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+  .rss-feed-row:hover .rss-feed-del { opacity: 1; }
+  .rss-feed-del:hover { color: var(--danger); }
+
+  .rss-add-row {
     display: flex;
     gap: 6px;
-    padding: 10px 14px;
+    padding: 8px 14px;
     border-bottom: 1px solid var(--border);
   }
-  .rss-url-row input {
+  .rss-add-row input {
     flex: 1;
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -517,9 +567,9 @@
     outline: none;
     transition: border-color var(--transition);
   }
-  .rss-url-row input:focus { border-color: var(--accent); }
-  .rss-url-row input::placeholder { color: var(--text-muted); }
-  .rss-load-btn {
+  .rss-add-row input:focus { border-color: var(--accent); }
+  .rss-add-row input::placeholder { color: var(--text-muted); }
+  .rss-add-btn {
     background: none;
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -531,9 +581,30 @@
     transition: all var(--transition);
     white-space: nowrap;
   }
-  .rss-load-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .rss-add-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  .rss-items { padding: 6px 0; max-height: 320px; overflow-y: auto; }
+  .rss-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rss-filter-sel {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    padding: 4px 8px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+  }
+  .rss-filter-sel option { background: var(--surface2); }
+
+  .rss-items { padding: 6px 0; max-height: 280px; overflow-y: auto; }
   .rss-items::-webkit-scrollbar { width: 4px; }
   .rss-items::-webkit-scrollbar-track { background: transparent; }
   .rss-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -556,11 +627,14 @@
   }
   .rss-item a:hover { color: var(--accent2); }
 
-  .rss-item-date {
+  .rss-item-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 3px;
     font-size: 11px;
     color: var(--text-muted);
-    margin-top: 3px;
   }
+  .rss-item-source { color: var(--accent); opacity: 0.8; }
 
   .rss-placeholder {
     padding: 20px 14px;
@@ -882,15 +956,23 @@
     <!-- RSS -->
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">RSS Feed</span>
-        <button class="icon-btn rss-load-btn" id="rssRefresh" style="padding:3px 8px;font-size:11px;border:none;">↻ Refresh</button>
+        <span class="panel-title">RSS Feeds</span>
+        <button class="icon-btn" id="rssRefresh" style="padding:3px 8px;font-size:11px;border:none;">↻ Refresh</button>
       </div>
-      <div class="rss-url-row">
-        <input type="text" id="rssUrl" placeholder="Enter RSS feed URL…">
-        <button class="rss-load-btn" id="rssLoadBtn">Load</button>
+      <div class="rss-feed-list" id="rssFeedList">
+        <div class="rss-placeholder" style="padding:8px 0;">No feeds added yet.</div>
+      </div>
+      <div class="rss-add-row">
+        <input type="text" id="rssUrlInput" placeholder="Feed URL…">
+        <button class="rss-add-btn" id="rssAddBtn">+ Add</button>
+      </div>
+      <div class="rss-filter-row">
+        <select class="rss-filter-sel" id="rssFeedFilter">
+          <option value="all">All feeds</option>
+        </select>
       </div>
       <div class="rss-items" id="rssItems">
-        <div class="rss-placeholder">Enter an RSS feed URL above.<br>Results appear here.</div>
+        <div class="rss-placeholder">Add a feed above to get started.</div>
       </div>
     </div>
   </aside>
@@ -1435,24 +1517,121 @@ document.getElementById('clearPad').addEventListener('click', () => {
 
 // ── RSS ───────────────────────────────────────────────────────────────
 const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
-let currentRssUrl = localStorage.getItem('nexus_rss_url') || '';
-if (currentRssUrl) { document.getElementById('rssUrl').value = currentRssUrl; loadRss(currentRssUrl); }
+const RSS_MAX_FEEDS = 10;
+const RSS_MAX_AGE_DAYS = 7;
 
-function renderRssItems(items) {
-  if (!items.length) {
-    document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">No items found in feed.</div>';
+// Feed list: [{url, name}] stored in localStorage
+let _rssFeeds = JSON.parse(localStorage.getItem('nexus_rss_feeds') || '[]');
+// Cached items per feed: {url: [{title, link, date, source}]}
+let _rssCache = {};
+let _rssFilter = 'all';
+
+function saveRssFeeds() {
+  localStorage.setItem('nexus_rss_feeds', JSON.stringify(_rssFeeds));
+}
+
+function hostnameLabel(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); }
+  catch { return url; }
+}
+
+function isWithin7Days(dateStr) {
+  if (!dateStr) return true; // no date = include it
+  const d = new Date(dateStr);
+  if (isNaN(d)) return true;
+  return (Date.now() - d.getTime()) <= RSS_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+}
+
+function renderRssFeedList() {
+  const list = document.getElementById('rssFeedList');
+  const filter = document.getElementById('rssFeedFilter');
+
+  if (!_rssFeeds.length) {
+    list.innerHTML = '<div class="rss-placeholder" style="padding:8px 0;">No feeds added yet.</div>';
+    filter.innerHTML = '<option value="all">All feeds</option>';
     return;
   }
-  document.getElementById('rssItems').innerHTML = items.slice(0, 15).map(item => {
+
+  list.innerHTML = _rssFeeds.map((f, i) => `
+    <div class="rss-feed-row ${_rssFilter === f.url ? 'active' : ''}" data-idx="${i}">
+      <span class="rss-feed-name" data-url="${f.url}" title="${f.url}">${f.name}</span>
+      <button class="rss-feed-del" data-idx="${i}" title="Remove feed">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+
+  // Feed filter dropdown
+  filter.innerHTML = '<option value="all">All feeds</option>' +
+    _rssFeeds.map(f => `<option value="${f.url}" ${_rssFilter === f.url ? 'selected' : ''}>${f.name}</option>`).join('');
+
+  // Click feed name to filter
+  list.querySelectorAll('.rss-feed-name').forEach(el => {
+    el.addEventListener('click', () => {
+      _rssFilter = _rssFilter === el.dataset.url ? 'all' : el.dataset.url;
+      filter.value = _rssFilter;
+      renderRssFeedList();
+      renderRssItems();
+    });
+  });
+
+  // Delete feed
+  list.querySelectorAll('.rss-feed-del').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      const removed = _rssFeeds.splice(idx, 1)[0];
+      delete _rssCache[removed.url];
+      if (_rssFilter === removed.url) _rssFilter = 'all';
+      saveRssFeeds();
+      renderRssFeedList();
+      renderRssItems();
+      showToast('Feed removed.');
+    });
+  });
+}
+
+function renderRssItems() {
+  const container = document.getElementById('rssItems');
+  let items = [];
+
+  const feeds = _rssFilter === 'all' ? _rssFeeds : _rssFeeds.filter(f => f.url === _rssFilter);
+
+  feeds.forEach(f => {
+    const cached = _rssCache[f.url] || [];
+    items.push(...cached);
+  });
+
+  // Filter to last 7 days
+  items = items.filter(i => isWithin7Days(i.date));
+
+  // Sort chronologically newest first
+  items.sort((a, b) => {
+    const da = a.date ? new Date(a.date) : new Date(0);
+    const db = b.date ? new Date(b.date) : new Date(0);
+    return db - da;
+  });
+
+  if (!items.length) {
+    container.innerHTML = '<div class="rss-placeholder">' +
+      (_rssFeeds.length ? 'No items in the last 7 days.' : 'Add a feed above to get started.') +
+      '</div>';
+    return;
+  }
+
+  const showSource = _rssFilter === 'all' && _rssFeeds.length > 1;
+  container.innerHTML = items.slice(0, 30).map(item => {
     const date = item.date ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
     return `<div class="rss-item">
       <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
-      ${date ? `<div class="rss-item-date">${date}</div>` : ''}
+      <div class="rss-item-meta">
+        ${showSource ? `<span class="rss-item-source">${item.source}</span>` : ''}
+        ${date ? `<span>${date}</span>` : ''}
+      </div>
     </div>`;
   }).join('');
 }
 
-function parseRssXml(xml) {
+function parseRssXml(xml, sourceLabel) {
   const doc = new DOMParser().parseFromString(xml, 'text/xml');
   const isAtom = !!doc.querySelector('feed');
   const entries = isAtom
@@ -1464,57 +1643,76 @@ function parseRssXml(xml) {
       ? (el.querySelector('link[rel="alternate"]')?.getAttribute('href') || el.querySelector('link')?.getAttribute('href') || '')
       : (el.querySelector('link')?.textContent?.trim() || '');
     const date = el.querySelector('pubDate, published, updated')?.textContent?.trim() || '';
-    return { title, link, date };
+    return { title, link, date, source: sourceLabel };
   }).filter(i => i.link);
 }
 
-async function loadRss(url) {
-  if (!url) return;
-  document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">Loading…</div>';
-
+async function fetchFeed(feed) {
+  const sourceLabel = feed.name;
   // Try rss2json first
   try {
-    const res = await fetch(RSS2JSON + encodeURIComponent(url));
+    const res = await fetch(RSS2JSON + encodeURIComponent(feed.url));
     const data = await res.json();
     if (data.status === 'ok' && data.items?.length) {
-      renderRssItems(data.items.map(i => ({ title: i.title, link: i.link, date: i.pubDate })));
-      return;
+      return data.items.map(i => ({ title: i.title, link: i.link, date: i.pubDate, source: sourceLabel }));
     }
-  } catch (_) { /* fall through to XML fallback */ }
-
-  // Fallback: fetch raw XML via corsproxy.io and parse ourselves
+  } catch (_) {}
+  // Fallback: corsproxy.io + native XML parse
   try {
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(feed.url)}`;
     const res = await fetch(proxyUrl);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-    const items = parseRssXml(text);
-    if (items.length) {
-      renderRssItems(items);
-      return;
-    }
-    throw new Error('No items parsed');
-  } catch (err) {
-    document.getElementById('rssItems').innerHTML =
-      `<div class="rss-placeholder">Could not load feed.<br><span style="font-size:11px;opacity:.7;">Check the URL or try another.<br>${err.message}</span></div>`;
-  }
+    const items = parseRssXml(text, sourceLabel);
+    if (items.length) return items;
+  } catch (_) {}
+  return [];
 }
 
-document.getElementById('rssLoadBtn').addEventListener('click', () => {
-  const url = document.getElementById('rssUrl').value.trim();
+async function loadAllFeeds() {
+  if (!_rssFeeds.length) return;
+  document.getElementById('rssItems').innerHTML = '<div class="rss-placeholder">Loading…</div>';
+  const feedsToLoad = _rssFilter === 'all' ? _rssFeeds : _rssFeeds.filter(f => f.url === _rssFilter);
+  await Promise.all(feedsToLoad.map(async f => {
+    const items = await fetchFeed(f);
+    _rssCache[f.url] = items;
+  }));
+  renderRssItems();
+}
+
+// Add feed
+document.getElementById('rssAddBtn').addEventListener('click', async () => {
+  let url = document.getElementById('rssUrlInput').value.trim();
   if (!url) return;
-  localStorage.setItem('nexus_rss_url', url);
-  currentRssUrl = url;
-  loadRss(url);
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if (_rssFeeds.length >= RSS_MAX_FEEDS) { showToast('Maximum 10 feeds reached.'); return; }
+  if (_rssFeeds.find(f => f.url === url)) { showToast('Feed already added.'); return; }
+  const name = hostnameLabel(url);
+  _rssFeeds.push({ url, name });
+  saveRssFeeds();
+  document.getElementById('rssUrlInput').value = '';
+  renderRssFeedList();
+  showToast(`Loading ${name}…`);
+  const items = await fetchFeed({ url, name });
+  _rssCache[url] = items;
+  renderRssItems();
 });
 
-document.getElementById('rssUrl').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('rssLoadBtn').click();
+document.getElementById('rssUrlInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('rssAddBtn').click();
 });
 
-document.getElementById('rssRefresh').addEventListener('click', () => {
-  if (currentRssUrl) loadRss(currentRssUrl);
+document.getElementById('rssFeedFilter').addEventListener('change', e => {
+  _rssFilter = e.target.value;
+  renderRssFeedList();
+  renderRssItems();
 });
+
+document.getElementById('rssRefresh').addEventListener('click', loadAllFeeds);
+
+// Init
+renderRssFeedList();
+if (_rssFeeds.length) loadAllFeeds();
 
 // ── IMPORT ────────────────────────────────────────────────────────────
 let _importParsed = []; // [{name, links:[{name,url}]}]
