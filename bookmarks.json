@@ -580,6 +580,11 @@
           "id": "x4hygkmb",
           "name": "Tello Drone",
           "url": "https://www.ryzerobotics.com/tello"
+        },
+        {
+          "id": "xpsd5zj0",
+          "name": "Peloton",
+          "url": "https://members.onepeloton.com/classes"
         }
       ],
       "pinned": false,
@@ -634,11 +639,6 @@
           "id": "xf0o61w2",
           "name": "Outlook",
           "url": "https://outlook.live.com/mail/0/"
-        },
-        {
-          "id": "xpsd5zj0",
-          "name": "Peloton",
-          "url": "https://members.onepeloton.com/classes"
         },
         {
           "id": "xvk5h0t6",
