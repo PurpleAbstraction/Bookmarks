@@ -664,6 +664,11 @@
           "id": "xby883hl",
           "name": "Time and Date",
           "url": "https://www.timeanddate.com/"
+        },
+        {
+          "id": "xdprg0zt",
+          "name": "Obsidian",
+          "url": "https://obsidian.md/"
         }
       ],
       "color": "#9e6ec9",
@@ -766,8 +771,8 @@
         },
         {
           "id": "xgxk3h2x",
-          "name": "Keurig",
-          "url": "https://www.keurig.com/"
+          "name": "Keurig - Login",
+          "url": "https://www.keurig.com/login"
         },
         {
           "id": "xw1vgakj",
