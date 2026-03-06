@@ -596,6 +596,34 @@
       "color": "#c8a96e"
     },
     {
+      "id": "x6sypw0t",
+      "name": "Job Search",
+      "open": true,
+      "links": [
+        {
+          "id": "xfwfmt17",
+          "name": "Idealist",
+          "url": "https://www.idealist.org/en/jobs"
+        },
+        {
+          "id": "x6y08o4i",
+          "name": "Impact Opportunity",
+          "url": "https://impactopportunity.org/jobs/"
+        },
+        {
+          "id": "xxr3rsk8",
+          "name": "Net Impact",
+          "url": "https://careers.netimpact.org/jobs"
+        },
+        {
+          "id": "xl5kw5im",
+          "name": "Work for Good",
+          "url": "https://workforgood.org/candidates/find-a-job/"
+        }
+      ],
+      "color": "#c9c96e"
+    },
+    {
       "id": "x04my4i1",
       "name": "MAIN",
       "open": true,
@@ -887,34 +915,6 @@
       ],
       "pinned": false,
       "color": "#6ec9b4"
-    },
-    {
-      "id": "x6sypw0t",
-      "name": "Job Search",
-      "open": true,
-      "links": [
-        {
-          "id": "xxr3rsk8",
-          "name": "Net Impact",
-          "url": "https://careers.netimpact.org/jobs"
-        },
-        {
-          "id": "xl5kw5im",
-          "name": "Work for Good",
-          "url": "https://workforgood.org/candidates/find-a-job/"
-        },
-        {
-          "id": "x6y08o4i",
-          "name": "Impact Opportunity",
-          "url": "https://impactopportunity.org/jobs/"
-        },
-        {
-          "id": "xfwfmt17",
-          "name": "Idealist",
-          "url": "https://www.idealist.org/en/jobs"
-        }
-      ],
-      "color": "#c9c96e"
     }
   ]
 }
