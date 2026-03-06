@@ -660,20 +660,17 @@
     border-left: 3px solid var(--accent);
     background: var(--surface);
     margin-bottom: 20px;
-    position: relative;
   }
-  .category.pinned::after {
-    content: '▲ PINNED';
-    position: absolute;
-    top: -9px;
-    left: 12px;
+  .pinned-badge {
     font-family: 'Syne', sans-serif;
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.12em;
     color: var(--accent);
-    background: var(--bg);
-    padding: 0 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    padding: 1px 5px;
+    flex-shrink: 0;
   }
 
   /* Color picker inline */
@@ -1299,6 +1296,7 @@ function renderCategory(cat, container, q, isPinned) {
 
   const chevron = isPinned ? '' : `<svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
   const nameSpan = `<span class="category-name" style="color:${color !== 'var(--border)' ? color : ''}">${cat.name}</span>`;
+  const pinnedBadge = isPinned ? `<span class="pinned-badge">▲ PINNED</span>` : '';
   const countSpan = `<span class="category-count">${cat.links.length}</span>`;
 
   const catActions = document.createElement('div');
@@ -1314,7 +1312,7 @@ function renderCategory(cat, container, q, isPinned) {
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
     </button>`;
 
-  hdr.innerHTML = chevron + nameSpan + countSpan;
+  hdr.innerHTML = chevron + nameSpan + pinnedBadge + countSpan;
   hdr.appendChild(catActions);
 
   // Toggle open (not for pinned)
