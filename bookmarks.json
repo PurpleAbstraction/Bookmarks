@@ -595,6 +595,11 @@
           "id": "xyxuym9v",
           "name": "Nvidia GeForce Drivers",
           "url": "https://www.nvidia.com/en-us/geforce/drivers/"
+        },
+        {
+          "id": "xx07wnso",
+          "name": "ROG STRIX Z690-E GAMING WIFI",
+          "url": "https://rog.asus.com/us/motherboards/rog-strix/rog-strix-z690-e-gaming-wifi-model/"
         }
       ],
       "pinned": false,
