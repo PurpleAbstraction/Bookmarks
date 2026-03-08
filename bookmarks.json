@@ -26,6 +26,11 @@
           "url": "https://beta.dreamstudio.ai/generate"
         },
         {
+          "id": "x8m58voy",
+          "name": "Leonardo.ai",
+          "url": "https://app.leonardo.ai/"
+        },
+        {
           "id": "x299v4m1",
           "name": "Midjourney",
           "url": "https://www.midjourney.com/app/"
@@ -74,11 +79,6 @@
           "id": "x2a9mm5c",
           "name": "Zapier - Automation",
           "url": "https://zapier.com/"
-        },
-        {
-          "id": "x8m58voy",
-          "name": "Leonardo.ai",
-          "url": "https://app.leonardo.ai/"
         }
       ],
       "pinned": false,
@@ -577,6 +577,11 @@
           "url": "https://www3.nasa.gov/send-your-name-with-viper/"
         },
         {
+          "id": "xyxuym9v",
+          "name": "Nvidia GeForce Drivers",
+          "url": "https://www.nvidia.com/en-us/geforce/drivers/"
+        },
+        {
           "id": "xdprg0zt",
           "name": "Obsidian",
           "url": "https://obsidian.md/"
@@ -587,19 +592,14 @@
           "url": "https://members.onepeloton.com/classes"
         },
         {
-          "id": "x4hygkmb",
-          "name": "Tello Drone",
-          "url": "https://www.ryzerobotics.com/tello"
-        },
-        {
-          "id": "xyxuym9v",
-          "name": "Nvidia GeForce Drivers",
-          "url": "https://www.nvidia.com/en-us/geforce/drivers/"
-        },
-        {
           "id": "xx07wnso",
           "name": "ROG STRIX Z690-E GAMING WIFI",
           "url": "https://rog.asus.com/us/motherboards/rog-strix/rog-strix-z690-e-gaming-wifi-model/"
+        },
+        {
+          "id": "x4hygkmb",
+          "name": "Tello Drone",
+          "url": "https://www.ryzerobotics.com/tello"
         }
       ],
       "pinned": false,
